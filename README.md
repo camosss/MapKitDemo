@@ -77,7 +77,9 @@ func setupLoactionManager() {
 
 **[참고]** 위치 정확도
 
-<img src = "https://user-images.githubusercontent.com/74236080/138254696-c06464de-4d39-4247-a07d-606832b220d0.png" width="40%" height="40%">
+![best](https://user-images.githubusercontent.com/74236080/138255556-9a54fcee-7c81-4309-96d1-593e30032e00.png)
+
+
 
 
 2️⃣  앱 내에서의 위치 서비스 권한을 요청한다.
@@ -132,6 +134,7 @@ func centerViewOnUserLocation() {
 <img src = "https://user-images.githubusercontent.com/74236080/138254877-9fdaae50-69e6-4b1f-9c0a-d4b233a942b7.png" width="40%" height="40%">
 
 
+---
 
 - 현위치의 주소를 Label에 업데이트 해야한다고 하면, 권한이 허용됐을 때 지도를 움직일때마다 현위치를 업데이트한다.
 
@@ -204,7 +207,7 @@ func setupLoactionManager() {
     locationManager.delegate = self
     locationManager.desiredAccuracy = kCLLocationAccuracyBest // 정확도
     
-		mapView.delegate = self
+    mapView.delegate = self
 }
 ```
 
@@ -225,7 +228,7 @@ func getPinCenterLocation(for mapView: MKMapView) -> CLLocation {
 extension MapVC: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         
-				let center = getPinCenterLocation(for: mapView)
+	let center = getPinCenterLocation(for: mapView)
 		
 		...
 ```
@@ -234,7 +237,7 @@ extension MapVC: MKMapViewDelegate {
 
 **그럼 이제 핀의 중심 좌표(위도, 경도)를 가진 `center`를 가지고 주소를 어떻게 가져와야할까**
 
-<img src = "https://user-images.githubusercontent.com/74236080/138255327-140faafb-65a8-49a2-b141-485e357019e5.png" width="40%" height="40%">
+![geo](https://user-images.githubusercontent.com/74236080/138255941-a99fa6c2-645c-4c0c-b4d4-ff2376c6b22f.png)
 
 
 > **CLGeocoder** → 지리적 좌표와 장소 이름 간의 변환을 위한 인터페이스
@@ -268,7 +271,7 @@ extension MapVC: MKMapViewDelegate {
 var previousLocation: CLLocation?
 ```
 
-1. 그리고 앱 내에서의 위치 서비스 권한을 허용했을 때, **위치의 좌표값을 저장**한다.
+2. 그리고 앱 내에서의 위치 서비스 권한을 허용했을 때, **위치의 좌표값을 저장**한다.
 
 ```swift
 case .authorizedWhenInUse:
@@ -280,7 +283,7 @@ case .authorizedWhenInUse:
     previousLocation = getPinCenterLocation(for: mapView)
 ```
 
-1. MKMapViewDelegate 로 돌아와서 위치 좌표를 이용해 현재 위치의 주소(**center**)를 얻기 전에 아래와 같이 처리해준다.
+3. MKMapViewDelegate 로 돌아와서 위치 좌표를 이용해 현재 위치의 주소(**center**)를 얻기 전에 아래와 같이 처리해준다.
     
     
     - **움직임이 50m 이하인 경우에는 위치 정보를 호출하지 않도록 설정**
@@ -292,13 +295,13 @@ case .authorizedWhenInUse:
     ```swift
     extension MapVC: MKMapViewDelegate {
         func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-            let center = getPinCenterLocation(for: mapView)
+           let center = getPinCenterLocation(for: mapView)
     				
-    				...
+    		...
     
-    				guard let previousLocation = self.previousLocation else { return }      
-    				guard center.distance(from: previousLocation) > 50 else { return }
-    				self.previousLocation = center
+            guard let previousLocation = self.previousLocation else { return }      
+    	    guard center.distance(from: previousLocation) > 50 else { return }
+            self.previousLocation = center
     					
             geoCoder.reverseGeocodeLocation(center, preferredLocale: locale) { placemark, error in
                ...
@@ -307,7 +310,7 @@ case .authorizedWhenInUse:
     ```
     
 
-1. **Reverse Geocode**가 끝나면, addressLabel에 주소를 넣는다.
+4. **Reverse Geocode**가 끝나면, addressLabel에 주소를 넣는다.
 
 - ***DispatchQueue.main.async***
     
