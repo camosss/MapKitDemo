@@ -98,7 +98,7 @@ func checkLocationAuthorization(_ authorizationStatus: CLAuthorizationStatus) {
 
      case .denied:
          print("권한 요청 거부") 
-				// 권한 승인 알림 
+	// 권한 승인 알림 
 
      case .notDetermined: -> 앱을 처음 실행했을 때 해당 케이스에 들어온다.
          print("결정되지 않음 -> 권한 요청")
@@ -106,7 +106,7 @@ func checkLocationAuthorization(_ authorizationStatus: CLAuthorizationStatus) {
 
      case .restricted:
          print("제한")
-				// 설정탭으로 이동
+	// 설정탭으로 이동
 
      case .authorizedAlways:
          print("항상 허용")
@@ -126,7 +126,7 @@ func centerViewOnUserLocation() {
 																						latitudinalMeters: regionInMeters, 
 																						longitudinalMeters: regionInMeters)
         // mapView에 지정한 지역을 확대
-				mapView.setRegion(region, animated: true)
+	mapView.setRegion(region, animated: true)
     }
 }
 ```
@@ -166,7 +166,7 @@ func locationManager(_ manager: CLLocationManager, didUpdateLocations locations:
 
 이 과정을 통해 **regionInMeters (1,000)** 반경 (**region**) 안에서 업데이트되는 위치를 알 수 있다. 
 
-***CLLocationManagerDelegate*** 에서 또 다른 메서드인 ******`didChangeAuthorization` 는 권한 부여가 변경될 때마다 위치 권한 부여를 다시 확인한다.
+- ***CLLocationManagerDelegate*** 에서 또 다른 메서드인 `didChangeAuthorization` 는 권한 부여가 변경될 때마다 위치 권한 부여를 다시 확인한다.
 
 ```swift
 func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -292,22 +292,23 @@ case .authorizedWhenInUse:
     
     - 그리고 해당 위치의 좌표를 주소로 변경
     
-    ```swift
-    extension MapVC: MKMapViewDelegate {
-        func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-           let center = getPinCenterLocation(for: mapView)
+```swift
+extension MapVC: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+       let center = getPinCenterLocation(for: mapView)
     				
-    		...
+    	...
     
-            guard let previousLocation = self.previousLocation else { return }      
-    	    guard center.distance(from: previousLocation) > 50 else { return }
-            self.previousLocation = center
+        guard let previousLocation = self.previousLocation else { return }      
+        guard center.distance(from: previousLocation) > 50 else { return }
+        self.previousLocation = center
     					
-            geoCoder.reverseGeocodeLocation(center, preferredLocale: locale) { placemark, error in
-               ...
-        }
+        geoCoder.reverseGeocodeLocation(center, preferredLocale: locale) { placemark, error in
+   
+   	...
     }
-    ```
+}
+```
     
 
 4. **Reverse Geocode**가 끝나면, addressLabel에 주소를 넣는다.
