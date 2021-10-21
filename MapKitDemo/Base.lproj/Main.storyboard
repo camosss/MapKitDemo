@@ -19,17 +19,41 @@
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="s06-ow-bw2">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="862"/>
                             </mapView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mappin.and.ellipse" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="3sd-1R-NcF">
+                                <rect key="frame" x="187" y="427.5" width="40" height="40.5"/>
+                                <color key="tintColor" systemColor="systemOrangeColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="oKG-mv-ASv"/>
+                                    <constraint firstAttribute="height" constant="40" id="wBu-sO-pnt"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jhl-0p-Qe4">
+                                <rect key="frame" x="0.0" y="812" width="414" height="50"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="2EM-Iv-hlM"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="G5c-Bc-JZG"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="3sd-1R-NcF" firstAttribute="centerX" secondItem="j01-Yi-vJP" secondAttribute="centerX" id="6XS-71-oFT"/>
                             <constraint firstItem="s06-ow-bw2" firstAttribute="leading" secondItem="G5c-Bc-JZG" secondAttribute="leading" id="VP2-81-ucX"/>
+                            <constraint firstItem="G5c-Bc-JZG" firstAttribute="bottom" secondItem="Jhl-0p-Qe4" secondAttribute="bottom" id="fH0-JM-k1q"/>
                             <constraint firstItem="s06-ow-bw2" firstAttribute="top" secondItem="G5c-Bc-JZG" secondAttribute="top" constant="-44" id="gpu-IR-KrV"/>
+                            <constraint firstItem="G5c-Bc-JZG" firstAttribute="trailing" secondItem="Jhl-0p-Qe4" secondAttribute="trailing" id="jnw-S8-kaR"/>
+                            <constraint firstItem="Jhl-0p-Qe4" firstAttribute="leading" secondItem="G5c-Bc-JZG" secondAttribute="leading" id="mq8-FK-Hdd"/>
                             <constraint firstItem="G5c-Bc-JZG" firstAttribute="bottom" secondItem="s06-ow-bw2" secondAttribute="bottom" id="tEC-Vx-LHY"/>
                             <constraint firstItem="G5c-Bc-JZG" firstAttribute="trailing" secondItem="s06-ow-bw2" secondAttribute="trailing" id="vvA-95-1gx"/>
+                            <constraint firstItem="3sd-1R-NcF" firstAttribute="centerY" secondItem="j01-Yi-vJP" secondAttribute="centerY" id="zPb-w2-Jye"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="addressLabel" destination="Jhl-0p-Qe4" id="Qh1-ul-sGP"/>
                         <outlet property="mapView" destination="s06-ow-bw2" id="f7P-L5-nY7"/>
                     </connections>
                 </viewController>
@@ -39,8 +63,12 @@
         </scene>
     </scenes>
     <resources>
+        <image name="mappin.and.ellipse" catalog="system" width="118" height="128"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemOrangeColor">
+            <color red="1" green="0.58431372549019611" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

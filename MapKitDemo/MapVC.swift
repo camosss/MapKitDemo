@@ -14,9 +14,11 @@ class MapVC: UIViewController {
     // MARK: - Properites
     
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var addressLabel: UILabel!
     
     let locationManager = CLLocationManager()
     let regionInMeters: Double = 10000
+    var previousLocation: CLLocation?
     
     // MARK: - Lifecycle
     
@@ -35,7 +37,6 @@ class MapVC: UIViewController {
         if #available(iOS 14, *) { authorizationStatus = locationManager.authorizationStatus }
         else { authorizationStatus = CLLocationManager.authorizationStatus() }
         
-        // 위치 관리 설정 -> 위치 서비스 활성화
         if CLLocationManager.locationServicesEnabled() {
             setupLoactionManager()
             checkLocationAuthorization(authorizationStatus)
@@ -48,6 +49,7 @@ class MapVC: UIViewController {
     func setupLoactionManager() {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest // 정확도
+        mapView.delegate = self
     }
     
     // 3 앱 내에서의 위치 서비스 권한을 요청
@@ -58,6 +60,7 @@ class MapVC: UIViewController {
             mapView.showsUserLocation = true // 현위치
             centerViewOnUserLocation()
             locationManager.startUpdatingLocation() // 지도를 움직일때마다 현위치를 업데이트한다.
+            previousLocation = getPinCenterLocation(for: mapView)
         case .denied:
             print("권한 요청 거부")
         case .notDetermined:
@@ -80,15 +83,55 @@ class MapVC: UIViewController {
         }
     }
     
+    // MARK: - Pin Helper
+    
+    // 핀의 중심 위치
+    func getPinCenterLocation(for mapView: MKMapView) -> CLLocation {
+        let latitude = mapView.centerCoordinate.latitude
+        let longitude = mapView.centerCoordinate.longitude
+        
+        return CLLocation(latitude: latitude, longitude: longitude)
+    }
     
 }
 
+// MARK: - CLLocationManagerDelegate
+
 extension MapVC: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print("update")
+        guard let location = locations.last else { return }
+        let center = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+        let region = MKCoordinateRegion.init(center: center, latitudinalMeters: regionInMeters, longitudinalMeters: regionInMeters)
+        mapView.setRegion(region, animated: true)
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        print("change")
+        checkLocationAuthorization(status)
+    }
+}
+ 
+
+extension MapVC: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        let center = getPinCenterLocation(for: mapView)
+        let geoCoder = CLGeocoder()
+        let locale = Locale(identifier: "Ko-kr")
+        
+        guard let previousLocation = self.previousLocation else { return }
+        guard center.distance(from: previousLocation) > 50 else { return }
+        self.previousLocation = center
+        
+        geoCoder.reverseGeocodeLocation(center, preferredLocale: locale) { placemark, error in
+            guard error == nil, let place = placemark?.first else {
+                print("주소 설정 불가능")
+                return
+            }
+            
+            // UI 업데이트마다 메인 스레드로 다시 이동
+            DispatchQueue.main.async {
+                let address = "\(place.administrativeArea ?? "") \(place.locality ?? "") \(place.subThoroughfare ?? "") \(place.thoroughfare ?? "")"
+                self.addressLabel.text = address
+            }
+        }
     }
 }
